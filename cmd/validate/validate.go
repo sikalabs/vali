@@ -2,7 +2,7 @@ package validate
 
 import (
 	"fmt"
-	"log"
+	"os"
 
 	"github.com/sikalabs/vali/cmd/root"
 	"github.com/sikalabs/vali/pkg/vali"
@@ -15,23 +15,19 @@ var Cmd = &cobra.Command{
 	Args:    cobra.NoArgs,
 	Run: func(c *cobra.Command, args []string) {
 		config, err := vali.ReadConfig()
-		handleError(err)
-
-		out := vali.Validate(config)
-		if out.OK == false {
-			log.Fatalln("Validation failed")
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "Error:", err)
+			os.Exit(1)
 		}
 
-		fmt.Println("OK")
+		out := vali.Validate(config)
+		vali.PrintValidateOutput(out)
+		if !out.OK {
+			os.Exit(1)
+		}
 	},
 }
 
 func init() {
 	root.Cmd.AddCommand(Cmd)
-}
-
-func handleError(err error) {
-	if err != nil {
-		log.Fatalln(err)
-	}
 }

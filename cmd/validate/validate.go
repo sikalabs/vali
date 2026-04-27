@@ -9,12 +9,20 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var FlagConfig string
+
 var Cmd = &cobra.Command{
 	Use:     "validate",
 	Aliases: []string{"vali"},
 	Args:    cobra.NoArgs,
 	Run: func(c *cobra.Command, args []string) {
-		config, err := vali.ReadConfig()
+		var config vali.ValiConfig
+		var err error
+		if FlagConfig != "" {
+			config, err = vali.ReadConfigFromFile(FlagConfig)
+		} else {
+			config, err = vali.ReadConfig()
+		}
 		if err != nil {
 			fmt.Fprintln(os.Stderr, "Error:", err)
 			os.Exit(1)
@@ -30,4 +38,11 @@ var Cmd = &cobra.Command{
 
 func init() {
 	root.Cmd.AddCommand(Cmd)
+	Cmd.Flags().StringVarP(
+		&FlagConfig,
+		"config",
+		"c",
+		"",
+		"path to config file",
+	)
 }

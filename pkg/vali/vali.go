@@ -20,18 +20,26 @@ type ValiOutput struct {
 	MissingFiles []string
 }
 
+func ReadConfigFromFile(path string) (ValiConfig, error) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return ValiConfig{}, fmt.Errorf("cannot read config file %s: %w", path, err)
+	}
+	var config ValiConfig
+	if err := json.Unmarshal(data, &config); err != nil {
+		return ValiConfig{}, fmt.Errorf("cannot parse config file %s: %w", path, err)
+	}
+	return config, nil
+}
+
 func ReadConfig() (ValiConfig, error) {
 	for _, path := range []string{
 		"vali.local.json",
 		"vali.json",
 		"/vali.json",
 	} {
-		data, err := os.ReadFile(path)
+		config, err := ReadConfigFromFile(path)
 		if err != nil {
-			continue
-		}
-		var config ValiConfig
-		if err := json.Unmarshal(data, &config); err != nil {
 			continue
 		}
 		return config, nil

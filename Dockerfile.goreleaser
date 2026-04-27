@@ -1,0 +1,3 @@
+FROM debian:13-slim
+LABEL org.opencontainers.image.source=https://github.com/sikalabs/vali
+COPY vali /usr/local/bin/

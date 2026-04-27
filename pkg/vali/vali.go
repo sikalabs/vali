@@ -60,3 +60,17 @@ func Validate(config ValiConfig) ValiOutput {
 
 	return out
 }
+
+func PrintValidateOutput(out ValiOutput) {
+	if !out.OK {
+		fmt.Fprintln(os.Stderr, "Validation failed")
+		for _, name := range out.MissingEnv {
+			fmt.Fprintf(os.Stderr, "  missing env:  %s\n", name)
+		}
+		for _, path := range out.MissingFiles {
+			fmt.Fprintf(os.Stderr, "  missing file: %s\n", path)
+		}
+		return
+	}
+	fmt.Println("OK")
+}

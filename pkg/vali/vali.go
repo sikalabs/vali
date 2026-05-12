@@ -4,6 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"strings"
+
+	"gopkg.in/yaml.v3"
 )
 
 type ValiConfig struct {
@@ -26,16 +29,28 @@ func ReadConfigFromFile(path string) (ValiConfig, error) {
 		return ValiConfig{}, fmt.Errorf("cannot read config file %s: %w", path, err)
 	}
 	var config ValiConfig
-	if err := json.Unmarshal(data, &config); err != nil {
-		return ValiConfig{}, fmt.Errorf("cannot parse config file %s: %w", path, err)
+	if strings.HasSuffix(path, ".yaml") || strings.HasSuffix(path, ".yml") {
+		if err := yaml.Unmarshal(data, &config); err != nil {
+			return ValiConfig{}, fmt.Errorf("cannot parse config file %s: %w", path, err)
+		}
+	} else {
+		if err := json.Unmarshal(data, &config); err != nil {
+			return ValiConfig{}, fmt.Errorf("cannot parse config file %s: %w", path, err)
+		}
 	}
 	return config, nil
 }
 
 func ReadConfig() (ValiConfig, error) {
 	for _, path := range []string{
+		"vali.local.yaml",
+		"vali.local.yml",
 		"vali.local.json",
+		"vali.yaml",
+		"vali.yml",
 		"vali.json",
+		"/vali.yaml",
+		"/vali.yml",
 		"/vali.json",
 	} {
 		config, err := ReadConfigFromFile(path)

@@ -97,3 +97,23 @@ func PrintValidateOutput(out ValiOutput) {
 	}
 	fmt.Println("OK")
 }
+
+func ValidateCommand(configFile string) {
+	var config ValiConfig
+	var err error
+	if configFile != "" {
+		config, err = ReadConfigFromFile(configFile)
+	} else {
+		config, err = ReadConfig()
+	}
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "Error:", err)
+		os.Exit(1)
+	}
+
+	out := Validate(config)
+	PrintValidateOutput(out)
+	if !out.OK {
+		os.Exit(1)
+	}
+}

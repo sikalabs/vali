@@ -15,7 +15,7 @@ var FlagConfig string
 
 var Cmd = &cobra.Command{
 	Use:     "validate-and-run",
-	Aliases: []string{"vali-and-run"},
+	Aliases: []string{"vali-and-run", "entrypoint"},
 	Args:    cobra.MinimumNArgs(1),
 	Run: func(c *cobra.Command, args []string) {
 		vali.ValidateCommand(FlagConfig)

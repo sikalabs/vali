@@ -10,7 +10,21 @@ go install github.com/sikalabs/vali@latest
 
 ## Config file
 
-Create a `vali.json` in your project root:
+Create a `vali.yaml` (or `vali.json`) in your project root:
+
+```yaml
+meta:
+  version: 1
+env:
+  - DATABASE_URL
+  - API_KEY
+  - SECRET_TOKEN
+files:
+  - /etc/app/config.yaml
+  - /run/secrets/tls.key
+```
+
+JSON is also supported:
 
 ```json
 {
@@ -22,9 +36,15 @@ Create a `vali.json` in your project root:
 
 vali looks for config files in this order:
 
-1. `vali.local.json`
-2. `vali.json`
-3. `/vali.json`
+1. `vali.local.yaml`
+2. `vali.local.yml`
+3. `vali.local.json`
+4. `vali.yaml`
+5. `vali.yml`
+6. `vali.json`
+7. `/vali.yaml`
+8. `/vali.yml`
+9. `/vali.json`
 
 ## Usage
 
